@@ -1,7 +1,17 @@
 <?php
 
 $loginPage = true; ?>
-<?php include "./includes/auth/login.php"; ?>
+<?php include "./includes/auth/login.php"; 
+
+date_default_timezone_set("Asia/Singapore");
+$date = new DateTime(); 
+$completeDateNow  = $date->format('M d, Y');  
+$day  = $date->format('D'); 
+$timenow = date("h:i a"); 
+// echo $timenow;
+// $sqlinsertTransact2= "INSERT INTO `points_report`( `member_id`, `date`, `time`, `month`, `year`, `points_earned`) VALUES ('1234','11-04-2022','$timenow','Nov','2022','10')";
+// mysqli_query($conn, $sqlinsertTransact2);
+?>
 
 
 <!DOCTYPE html>
@@ -23,7 +33,7 @@ $loginPage = true; ?>
     
     <div class="container bg-white relative top-24 md:top-28 mx-auto w-11/12 max-w-sm">
         <div class="container shadow-xl p-5 rounded-lg">
-            <h1 class="text-emerald-800 text-2xl text-center mb-5">Welcome to<br>Arvie Cosmetics<br>And<br>Skin Products Trading</h1>
+            <h1 class="text-emerald-800 text-2xl text-center mb-5">Welcome to<br>Arvie Direct Sales</h1>
             <hr>
 
             <!-- Error Message (Normally Hidden)-->

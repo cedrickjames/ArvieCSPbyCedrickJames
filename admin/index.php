@@ -1,7 +1,34 @@
 <?php
 session_start();
 include_once ("../includes/config/conn.php");
-$db= $conn;
+
+
+if(!isset( $_SESSION['loggedin'])){
+    header("location:../login.php");
+  }else{
+    if($_SESSION['permission']=='userist'){
+    header("location:../user/index.php");
+
+    }
+  }
+$db = $conn;
+
+ //change rebates ammount
+
+ if(isset($_POST['changeRebate'])){
+    for($i=1; $i<=10; $i++){
+        $rebatesA = $_POST['rebatesA'.$i];
+        $rebatesB = $_POST['rebatesB'.$i];
+        // echo "<script>console.log('$rebatesA'); </script>";
+        // echo $rebatesA;
+        // echo $rebatesB;
+        $sqlUpdateRebates=  "UPDATE `rebatesamount` SET `rebatesA`='$rebatesA',`rebatesB`='$rebatesB' WHERE `id` = '$i'";
+    mysqli_query($conn, $sqlUpdateRebates);
+  
+    }
+    
+    
+  }
 
 // code for getting the accounts//
 $tableNameAccount="accounts";
@@ -123,6 +150,10 @@ if(isset($_GET['Approve'])){
     }
 
 }
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -133,15 +164,24 @@ if(isset($_GET['Approve'])){
     <link rel="stylesheet" href="../styles/styles.css">
     <!-- <link rel="stylesheet" href="./dist/output.css"> -->
     <link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.3/dist/flowbite.min.css" />
+    <link rel="stylesheet" href="../node_modules/tw-elements/dist/css/index.min.css" />
+
     <title>Admin</title>
     <script src="../js/tailwind-3.1.8.js"></script>
     <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
+    <script src="../node_modules/tw-elements/dist/js/index.min.js"></script>
+
     <script src="../js/jquery-3.6.1.min.js"></script>
     <script src="../node_modules/tw-elements/dist/js/index.min.js"></script>
     <title>Arvie Cosmetic & Skincare  ProductsTrading</title>
 
     <style>
-        @media screen and (min-width: 768px) {
+        @media screen and (max-width: 1023px) {
+            .sales-dashboard{
+                height: 66vh !important;
+            }
+        }
+        @media screen and (min-width: 1024px) {
             .user-dashboard-content-container {
                 width: calc(100vw - 256px);
             }
@@ -162,6 +202,12 @@ if(isset($_GET['Approve'])){
                 width: 1px;
                 height: 10px;
                 background-color: #374151;
+            }
+            .sales-dashboard{
+                height: calc(33% - 15px) !important;
+            }
+            .content-container{
+                height: calc(100vh - 73px);
             }
         }
         @media screen and (min-width: 1280px) {
@@ -190,166 +236,122 @@ if(isset($_GET['Approve'])){
     </style>
 </head>
 <body>
-    
+  <?php include_once "./admin-header.php"; ?>
+  <div class="content-container lg:flex lg:flex-row w-full">
+    <div class="display-none lg:display-block lg:w-1/4 xl:w-1/5 2xl:w-1/5">
+      <?php include_once "./admin-nav.php"; ?>
+    </div>
+    <div class="user-dashboard-content-container pt-5 px-6 pb-5 bg-emerald-100 w-full lg:w-3/4 xl:w-4/5 2xl:w-4/5">
+        <!-- SALES -->
+        <div class="sales-dashboard grid mb-5 rounded-lg border border-gray-200 shadow-sm lg:grid-cols-4 shadow-xl">
+            <figure class="flex flex-col justify-center items-center text-center bg-white rounded-t-lg border-b border-gray-200 lg:rounded-t-none lg:rounded-tl-lg lg:border-r">
+                    <h1 class="mb-2 font-medium text-2xl md:text-3xl lg:text-lg xl:text-xl 2xl:text-3xl">Total Sales</h1>
+                    <p class="mt-2 font-bold text-4xl md:text-5xl lg:text-xl xl:text-2xl 2xl:text-4xl">₱ 999,999,999.00</p>
+            </figure>
 
-    <?php include_once "./user-header.php"; ?>
-    <div class="flex flex-row">
-        <div class="basis-80 md:basis-64 xl:basis-72 h-screen">
-            <?php include_once "./user-nav.php"; ?>
+            <figure class="flex flex-col justify-center items-center text-center bg-white border-b border-gray-200 lg:border-r">
+                    <h1 class="mb-2 font-medium text-xl md:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl">Sales Today</h1>
+                    <p class="mt-2 font-bold text-2xl md:text-4xl lg:text-xl xl:text-2xl 2xl:text-3xl">₱ 999,999,999.00</p>
+            </figure>
+
+            <figure class="flex flex-col justify-center items-center text-center bg-white border-b border-gray-200 lg:border-b-0 lg:border-r">
+                    <h1 class="mb-2 font-medium text-xl md:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl">Sales This Month</h1>
+                    <p class="mt-2 font-bold text-2xl md:text-4xl lg:text-xl xl:text-2xl 2xl:text-3xl">₱ 999,999,999.00</p>
+            </figure>
+
+            <figure class="flex flex-col justify-center items-center text-center bg-white rounded-b-lg border-gray-200 lg:rounded-br-lg">
+                    <h1 class="mb-2 font-medium text-xl md:text-2xl lg:text-lg xl:text-xl 2xl:text-2xl">Sales This Year</h1>
+                    <p class="mt-2 font-bold text-2xl md:text-4xl lg:text-xl xl:text-2xl 2xl:text-3xl">₱ 999,999,999.00</p>
+            </figure>
         </div>
-       
 
-        <div class="user-dashboard-content-container pt-24 px-6 pb-6 bg-emerald-100 h-screen">
-        <div class="flex flex-col">
-          <!-- Button trigger modal -->
+        <div style="height: 66%;" class="grid grid-rows-4 lg:grid-rows-2 grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- MEMBERS -->
+            <div class="order-first row-span-1 col-span-2 grid mb-6 rounded-lg border border-gray-200 shadow-sm grid-cols-2 shadow-xl w-full h-full">
+                <figure class="flex flex-col justify-center items-center text-center bg-white rounded-l-lg border-b border-gray-200 lg:rounded-t-none lg:rounded-tl-lg border-r">
+                    <h1 class="mb-2 font-medium text-lg md:text-3xl lg:text-lg xl:text-2xl 2xl:text-3xl">Total Members</h1>
+                    <p class="mt-2 font-bold text-xl md:text-5xl lg:text-xl xl:text-2xl 2xl:text-4xl">999,999</p>
+                </figure>
 
-  <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
-    <div class="py-4 inline-block min-w-full sm:px-6 lg:px-8">
-      <div class="overflow-hidden">
-        <table class="min-w-full text-center">
-          <thead class="border-b bg-gray-800">
-            <tr>
-              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
-                #
-              </th>
-              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
-                Id
-              </th>
-              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
-                Email
-              </th>
-              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
-                Name
-              </th>
-              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
-                Invitee
-              </th>
-              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
-                Action
-              </th>
-            </tr>
-          </thead class="border-b">
-          <tbody>
-            <?php           if(is_array($fetchDataAccounts)){      
-                         $number = 1;
-                                 foreach($fetchDataAccounts as $data){
-                                    $fname = $data['first_name'];
-                                    $lname = $data['last_name'];
-                                    $email = $data['email_address'];
-                                    $id = $data['id'];
+                <figure class="flex flex-col justify-center items-center text-center bg-white border-b border-gray-200 rounded-r-lg">
+                    <h1 class="mb-2 font-medium text-lg md:text-2xl lg:text-lg xl:text-2xl 2xl:text-2xl">New Members Today</h1>
+                    <p class="mt-2 font-bold text-xl md:text-4xl lg:text-xl xl:text-2xl 2xl:text-3xl">999,999</p>
+                </figure>
+            </div>
+            <!-- MEMBERS WITH MOST INVITES -->
+            <div class="order-last lg:order-12 row-span-2 col-span-2 grid mb-6 rounded-lg border border-gray-200 shadow-sm lg:grid-cols-1 shadow-xl w-full h-full">
+                <figure class="overflow-auto flex flex-col pt-2 md:pt-3 2xl:pt-5 text-center  bg-white rounded-lg border-b border-gray-200 lg:rounded-t-none lg:rounded-tl-lg lg:border-r">
+                    <h1 class="pb-2 2xl:pb-5 font-black md:text-3xl lg:text-lg xl:text-2xl 2xl:text-5xl sticky top-0 bg-white">Top Points Earner</h1>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">1. JOHN ARIAN MALONDRAS</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">2. CEDRICK JAMES OROZO</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">3. KEVIN ROY MARERO</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">4. C.J. Orozo</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">5. C.J. Orozo</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">6. C.J. Orozo</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">7. C.J. Orozo</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">8. C.J. Orozo</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">9. C.J. Orozo</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                    <span class="mt-2">
+                        <p class="ml-5 inline-block font-medium float-left md:text-xl 2xl:text-3xl">10. C.J. Orozo</p>
+                        <p class="mr-5 inline-block font-medium float-right md:text-xl 2xl:text-3xl">999</p>
+                    </span>
+                </figure>
+            </div>
+            <!-- PAYOUT -->
+            <div class="lg:order-last col-span-2 grid mb-6 rounded-lg border border-gray-200 shadow-sm grid-cols-2 shadow-xl w-full h-full">
+                <figure class="flex flex-col justify-center items-center text-center bg-white rounded-l-lg border-b border-gray-200 lg:rounded-t-none lg:rounded-tl-lg border-r">
+                    <h1 class="mb-2 font-medium text-lg md:text-2xl lg:text-lg xl:text-2xl 2xl:text-3xl">Total Payout</h1>
+                    <p class="mt-2 font-bold text-xl md:text-4xl lg:text-xl xl:text-2xl 2xl:text-4xl">₱ 999,999,999.00</p>
+                </figure>
 
+                <figure class="flex flex-col justify-center items-center text-center bg-white border-b border-gray-200 rounded-r-lg">
+                    <h1 class="mb-2 font-medium text-lg md:text-xl lg:text-lg xl:text-2xl 2xl:text-2xl">Payout This Month</h1>
+                    <p class="mt-2 font-bold text-xl md:text-3xl lg:text-xl xl:text-2xl 2xl:text-3xl">₱ 999,999,999.00</p>
+                </figure>
+            </div>
 
-                                 
-
-                                 ?>
-
-            <tr class="bg-white border-b">
-              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"><?php echo $number ?></td>
-              <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-              <?php echo $id ;?>
-              </td>
-              <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-              <?php echo $email ;?>
-              </td>
-              <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-              <?php echo $fname . " ". $lname; ?>
-              </td>
-              <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-              <?php echo "Invitee Name" ;?>
-              </td>
-                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                <a href="index.php?Approve=<?php echo $id; ?>"   id= "finished<?php echo $id; ?>"class=" inline-block px-6 py-2 border-2 border-green-500 text-green-500 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out" >Approve</a>
-                <!-- <button type="button" class="inline-block px-6 py-2 border-2 border-green-500 text-green-500 font-medium text-xs leading-tight uppercase rounded hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-                     Approve
-                </button> -->
-                
-                
-            </td>
-
-            </tr class="bg-white border-b">
-            <?php 
-         $number++; }}else{
-            }
-                ?>
-          </tbody>
-        </table>
-        
-      </div>
-    </div>
-  </div>
-</div>
         </div>
     </div>
 
-    <!-- <div class="">
-  <button type="button" class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-    Vertically centered modal
-  </button>
-  <button type="button" class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out" data-bs-toggle="modal" data-bs-target="#exampleModalCenteredScrollable">
-    Vertically centered scrollable modal
-  </button>
-</div> -->
-<!-- 
-<div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-modal="true" role="dialog">
-  <div class="modal-dialog modal-dialog-centered relative w-auto pointer-events-none">
-    <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-      <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-        <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalScrollableLabel">
-          Modal title
-        </h5>
-        <button type="button"
-          class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
-          data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body relative p-4">
-        <p>This is a vertically centered modal.</p>
-      </div>
-      <div
-        class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-        <button type="button"
-          class="inline-block px-6 py-2.5 bg-purple-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
-          data-bs-dismiss="modal">
-          Close
-        </button>
-        <button type="button"
-          class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1">
-          Save changes
-        </button>
-      </div>
-    </div>
-  </div>
-</div> -->
 
-<!-- <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto" id="exampleModalCenteredScrollable" tabindex="-1" aria-labelledby="exampleModalCenteredScrollable" aria-modal="true" role="dialog">
-  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable relative w-auto pointer-events-none">
-    <div class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
-      <div class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-gray-200 rounded-t-md">
-        <h5 class="text-xl font-medium leading-normal text-gray-800" id="exampleModalCenteredScrollableLabel">
-          Modal title
-        </h5>
-        <button type="button"
-          class="btn-close box-content w-4 h-4 p-1 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
-          data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body relative p-4">
-        <p>This is some placeholder content to show a vertically centered modal. We've added some extra copy here to show how vertically centering the modal works when combined with scrollable modals. We also use some repeated line breaks to quickly extend the height of the content, thereby triggering the scrolling. When content becomes longer than the predefined max-height of modal, content will be cropped and scrollable within the modal.</p>
-    <br><br><br><br><br><br><br><br><br><br>
-    <p>Just like that.</p>
-      </div>
-      <div
-        class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-gray-200 rounded-b-md">
-        <button type="button"
-          class="inline-block px-6 py-2.5 bg-purple-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-purple-700 hover:shadow-lg focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-purple-800 active:shadow-lg transition duration-150 ease-in-out"
-          data-bs-dismiss="modal">
-          Close
-        </button>
-        <button type="button"
-          class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out ml-1">
-          Save changes
-        </button>
-      </div>
-    </div>
-  </div>
-</div> -->
+<?php include "./editRebates.php"?>;
+
+
+
+
+    <script>
+        $(document).ready(function(){
+            $("#dashboard").addClass("bg-emerald-700");
+            $("#dashboard").addClass("text-white");
+            $("#dashboard").removeClass("text-gray-600");
+        });
+    </script>
 </body>
 </html>

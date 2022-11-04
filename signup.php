@@ -1,5 +1,6 @@
-<?php $loginPage = false; ?>
-<?php include "./includes/auth/signup.php"; ?>
+<?php $loginPage = false;
+ ?>
+<?php //include "./includes/auth/signup.php"; ?>
 
 <!doctype html>
 <html lang="en">
@@ -14,13 +15,21 @@
     <script src="./js/tailwind-3.1.8.js"></script>
     <script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></script>
     <script src="./js/jquery-3.6.1.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="sweetalert2.all.min.js"></script>
+    <script src="sweetalert2.min.js"></script>
+<link rel="stylesheet" href="sweetalert2.min.css">
 </head>
 <body class="h-screen w-screen">
-    <?php include_once "./header.php"; ?>
+<?php include "./includes/auth/signup.php"; ?>
+    <?php include_once "./header.php"; 
+    
+ ?>
+
     
     <div class="container bg-white relative top-20 mx-auto w-11/12 max-w-sm md:max-w-xl">
         <div class="container shadow-xl p-5 rounded-lg">
-            <h1 class="text-emerald-800 text-2xl text-center mb-5">Welcome to<br>Arvie Cosmetics<br>And<br>Skin Products Trading</h1>
+            <h1 class="text-emerald-800 text-2xl text-center mb-5">Welcome to<br>Arvie Direct Sales</h1>
             <hr>
 
             <!-- Error Message (Normally Hidden)-->
@@ -37,6 +46,17 @@
 
             <!-- Sign up Form -->
             <form class="mt-5" action="signup.php" method="POST">
+                <div class="mb-6">
+                    <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">Activation Code</label>
+                    <input type="search" id="id-search" name="ref_code" list="idList" autocomplete="false" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+
+
+                </div>
+                <div class="relative mb-6 hidden">
+                    <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">Sponsor</label>
+                    <input type="text" id="sponsorId-input" name="sponsor" class="bg-gray-50 border border-gray-300 text-gray-900 text-lg rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                    <button type="button" class="checkID text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Check Referral Code</button>
+                </div>
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
                         <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">First name</label>
@@ -45,7 +65,15 @@
                     <div>
                         <label for="last_name" class="block mb-2 text-sm font-medium text-gray-900 ">Last name</label>
                         <input type="text" id="last_name" name="last_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required="">
-                    </div> 
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label for="address" class="block mb-2 text-sm font-medium text-gray-900 ">Address</label>
+                    <input type="text" name="homeAddress" id="homeAddress" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required="">
+                </div>
+                <div class="mb-6">
+                    <label for="birthday" class="block mb-2 text-sm font-medium text-gray-900 ">Birthday</label>
+                    <input type="date" name="birthday" id="birthday" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" maxlength="11" required="">
                 </div>
                 <div class="mb-6">
                     <label for="contact_number" class="block mb-2 text-sm font-medium text-gray-900 ">Contact Number</label>
@@ -54,7 +82,17 @@
                 <div class="mb-6">
                     <label for="email_address" class="block mb-2 text-sm font-medium text-gray-900">Email address</label>
                     <input type="email" name="email_address" id="email_address" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required="">
-                </div> 
+                </div>
+                <div class="grid gap-6 mb-6 md:grid-cols-2">
+                    <div>
+                        <label for="sss_num" class="block mb-2 text-sm font-medium text-gray-900">SSS Number</label>
+                        <input type="text" id="sss_num" name="sss_num" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required="">
+                    </div>
+                    <div>
+                        <label for="tin_acct" class="block mb-2 text-sm font-medium text-gray-900 ">TIN</label>
+                        <input type="text" id="tin_acct" name="tin_acct" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required="">
+                    </div> 
+                </div>
                 <div class="mb-6">
                     <label for="pass" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
                     <input type="password" name="pass" id="pass" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required="">
@@ -76,7 +114,14 @@
     </div>
 
 
+<?php
 
+if(isset($_GET['arviecsp'])){
+    $sponsorID = $_GET['arviecsp'];
+
+    echo "<script> document.getElementById('sponsorId-input').value='$sponsorID'</script>";
+}
+?>
     <script>
         $(document).ready(function(){
             $('#phone').keyup(function () { 
